@@ -1,6 +1,9 @@
 # Scripts_Thesis
 Repository containing Python scripts of my Thesis for sharing
 
+The scripts are build up for the different tasks to be addressed. There is no main entry point, each script can be run on his own or is used within other scripts.
+In the following some important scripts are summarized.
+
 ----
 The `preprocess_GRIB2_xxx.py` scripts are used to read in the Data from the GRIB2 output of the AROME simulations.
 They use Dask in the background to deal with the large files and to not mess up the available memory they are chunked (work is done on personal Laptop using an external hard drive where GRIB files are saved).
