@@ -22,7 +22,7 @@ Usage:
 This creates the file `ds_OP500_u_hybridPressure_[10.3, 12.6, 46.8, 48.2].nc` which contains the data of zonal wind on the available hybrid pressure levels for the extent defined.
 Similar things happen in the rest of the scripts but on other type of levels.
 
-The `preprocess_Station_hybridPressure.py` script combines the netcdf Datasets on hybrid pressure levels and interpolates it to the addressed station location.
+The `preprocess_Station_hybridPressure.py` script combines the netcdf Datasets on hybrid pressure levels (e.g. `ds_OP500_xxx_hybridPressure_[10.3, 12.6, 46.8, 48.2].nc`) and interpolates it to the addressed station location.
 It can be used from the shell or within the code: e.g. `python preprocess_Station_hybridPressure.py -r 'OP500' -p 'u,v,pres,z' -c '11.6222,47.3053' -s` 
 ````
 ```
@@ -37,3 +37,11 @@ It can be used from the shell or within the code: e.g. `python preprocess_Statio
 ```
 ````
 This creates the file `ds_OP500_interp_hybridPressure_(11.6222, 47.3053).nc` which contains the data of zonal and meridional wind, pressure and geopotential on the available hybrid pressure levels interpolated to defined coordinates.
+Again this is done for faster access in the Analysis afterwards (e.g. for creating profiles)
+
+
+
+
+
+
+
