@@ -37,7 +37,21 @@ It can be used from the shell or within the code: e.g. `python preprocess_Statio
 ```
 ````
 This creates the file `ds_OP500_interp_hybridPressure_(11.6222, 47.3053).nc` which contains the data of zonal and meridional wind, pressure and geopotential on the available hybrid pressure levels interpolated to defined coordinates.
-Again this is done for faster access in the Analysis afterwards (e.g. for creating profiles)
+Again this is done for faster access in the Analysis afterwards (e.g. for creating profiles).
+
+
+`read_RS.py` is used to read in the Radiosonde data. It can deal with the CROSSINN Radiosonde measurements as well as data retrieved from the University of Wyoming webpage. Is used within other scripts.
+
+`read_StationMeta.py` is used to read in the station meta data defined in the Stations.csv file. Is used within other scripts.
+
+`TS_read_stations.py` is used to read in station observations data from stations defined in Stations.csv. Is used within other scripts.
+
+`read_VCS_lidar.py` is used to read in WLS200s lidar data from Kolsass, Hochhaeuser and Mairbach. Is used within other scripts to create vertical cross section over innvalley.
+
+`read_lidar_vert.py` is used to read in SL88 lidar data from Kolsass. Is used within other scripts e.g. to create Height-time plot of observed wind speed over Kolsass.
+
+`read_iBox_Fluxes.py` is used to read in Flux data from iBox stations. Is used within other scripts to analyse surface fluxes like sensible heat flux etc.
+
 
 
 
