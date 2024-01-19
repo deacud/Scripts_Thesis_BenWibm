@@ -61,6 +61,10 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `path_handling.py` handles the path to files etc. **Needs to be adapted to personal need!!**
 
+`calculations.py` script which contains equations needed.
+
+
+
 
 
 
