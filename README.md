@@ -66,6 +66,8 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `calculations.py` script which contains equations needed.
 
+`skewT_WB_new.py` script which does plotting of skewT diagrams and wind profiles.
+
 
 
 
