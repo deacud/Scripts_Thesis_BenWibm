@@ -87,6 +87,8 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `plot_domain_new.py` script to make model domain overview plot
 
+`customized_barbs.py` script which adapts barb plot of matplotlib. Needed e.g. in `HT_plot_WB_new.py`
+
 
 
 
