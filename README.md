@@ -46,7 +46,7 @@ This creates the file `ds_OP500_interp_hybridPressure_(11.6222, 47.3053).nc` whi
 Again this is done for faster access in the Analysis afterwards (e.g. for creating profiles).
 
 ----
-
+**Scripts for reading observational data**
 
 `read_RS.py` is used to read in the Radiosonde data. It can deal with the CROSSINN Radiosonde measurements as well as data retrieved from the University of Wyoming webpage. Is used within other scripts.
 
@@ -63,12 +63,6 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 ----
 **Analysis scripts:**
 
-`path_handling.py` handles the path to files etc. **Needs to be adapted to personal need!!**
-
-`calculations.py` script which contains equations needed.
-
-`cartoplot.py` handles plotting of 2D data (e.g. Horizontal cross section). Used within other scripts.
-
 `skewT_WB_new.py` script which does plotting of skewT diagrams and wind profiles.
 
 `HT_plot_WB_new.py` script which does plotting of Height-Time diagrams.
@@ -79,6 +73,20 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 ----
 
+**Scripts may be needed in Analysis scripts:**
+`path_handling.py` handles the path to files etc. **Needs to be adapted to personal need!!**
+
+`calculations.py` script which contains equations needed.
+
+`cartoplot.py` handles plotting of 2D data (e.g. Horizontal cross section). Needed e.g. in `HCS_Analysis.py`
+
+`customized_barbs.py` script which adapts barb plot of matplotlib. Needed e.g. in `HT_plot_WB_new.py`
+
+`calc_difference_runs.py` script which handles difference calculation between two model simulations. Needed e.g. in `HCS_Analysis.py`
+
+`calc_gradients_WB.py` script which handles the calculation of gradients between two stations. Needed e.g. in `HT_plot_WB_new.py`
+
+----
 **Additional less relevant scripts:**
 
 `terrain_plot_WB_new.py` script to plot terrain overview's
@@ -87,7 +95,7 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `plot_domain_new.py` script to make model domain overview plot
 
-`customized_barbs.py` script which adapts barb plot of matplotlib. Needed e.g. in `HT_plot_WB_new.py`
+
 
 
 
