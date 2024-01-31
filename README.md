@@ -67,6 +67,8 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `calculations.py` script which contains equations needed.
 
+'cartoplot.py` handles plotting of 2D data (e.g. Horizontal cross section). Used within other scripts.
+
 `skewT_WB_new.py` script which does plotting of skewT diagrams and wind profiles.
 
 `HT_plot_WB_new.py` script which does plotting of Height-Time diagrams.
