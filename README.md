@@ -75,6 +75,8 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `HCS_Analysis.py` script to perform HCS Analysis/Plotting
 
+`Station_Analysis_WB.py` script for analysing timeseries model vs. station observations
+
 ----
 
 **Additional less relevant scripts:**
