@@ -83,6 +83,8 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `terrain_plot_WB_new.py` script to plot terrain overview's
 
+`Station_Statistics_Analysis.py` script for doing statistics between station observations and model data
+
 
 
 
