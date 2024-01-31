@@ -81,7 +81,7 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `calculations.py` script which contains equations needed.
 
-`cartoplot.py` handles plotting of 2D data (e.g. Horizontal cross section). Needed e.g. in `HCS_Analysis.py`
+`cartoplot_xarray.py` handles plotting of 2D data (e.g. Horizontal cross section). Needed e.g. in `HCS_Analysis.py`
 
 `customized_barbs.py` script which adapts barb plot of matplotlib. Needed e.g. in `HT_plot_WB_new.py`
 
