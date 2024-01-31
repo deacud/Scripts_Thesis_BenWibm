@@ -5,6 +5,8 @@ The scripts are build up for the different tasks to be addressed. There is no ma
 In the following some important scripts are summarized.
 
 ----
+**Scripts for preprocessing GRIB2 files:**
+
 The `preprocess_GRIB2_xxx.py` scripts are used to read in the Data from the GRIB2 output of the AROME simulations.
 They use Dask in the background to deal with the large files and to not mess up the available memory they are chunked (work is done on personal Laptop using an external hard drive where GRIB files are saved).
 As example `preprocess_GRIB2_hybridPressure.py` can be called from the shell and creates netcdf files for the addressed parameters for the defined model simulation.
