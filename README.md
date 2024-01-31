@@ -61,6 +61,7 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 `read_iBox_Fluxes.py` is used to read in Flux data from iBox stations. Is used within other scripts to analyse surface fluxes like sensible heat flux etc.
 
 ----
+**Analysis scripts:**
 
 `path_handling.py` handles the path to files etc. **Needs to be adapted to personal need!!**
 
@@ -69,6 +70,12 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 `skewT_WB_new.py` script which does plotting of skewT diagrams and wind profiles.
 
 `HT_plot_WB_new.py` script which does plotting of Height-Time diagrams.
+
+----
+
+**Additional less relevant scripts:**
+
+`terrain_plot_WB_new.py` script to plot terrain overview's
 
 
 
