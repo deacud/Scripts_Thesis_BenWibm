@@ -85,6 +85,7 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `Station_Statistics_Analysis.py` script for doing statistics between station observations and model data
 
+`plot_domain_new.py` script to make model domain overview plot
 
 
 
