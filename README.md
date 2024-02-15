@@ -91,6 +91,8 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `custom_colormaps.py` script which contains somue user defined colormaps. Needed e.g. in `HCS_Analysis.py`
 
+`config_file.py` file which control domain extent definitions. Needed e.g. in `HCS_Analysis.py`
+
 ----
 **Additional less relevant scripts:**
 
