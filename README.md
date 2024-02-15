@@ -89,6 +89,8 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `calc_gradients_WB.py` script which handles the calculation of gradients between two stations. Needed e.g. in `HT_plot_WB_new.py`
 
+`custom_colormaps.py` script which contains somue user defined colormaps. Needed e.g. in `HCS_Analysis.py`
+
 ----
 **Additional less relevant scripts:**
 
