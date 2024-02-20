@@ -133,7 +133,7 @@ def _open_mfdataset(dir_path, cfgrib_kwargs, preprocess):
     return ds
 
 
-def _save_toNetCDF(ds, run, var, typeOfLevel):
+def _save_toNetCDF(ds, run, typeOfLevel):
     '''
     function to save xarray Dataset to netcdf file
 
@@ -143,15 +143,13 @@ def _save_toNetCDF(ds, run, var, typeOfLevel):
         dataset containing all parameters on "typeOfLevel".
     run : str
         modelrun
-    var: str
-        parameter name
     typeOfLevel : str
         level of preprocessed parameters.
     '''
 
     # get save path and save it as netcdf file
     dir_save = get_Dataset_path(run)
-    name_save = set_Dataset_name(ds, typeOfLevel, var=var)
+    name_save = set_Dataset_name(ds, typeOfLevel)
     path_save = join(dir_save, name_save)
     print(f'Save file to {path_save}')
     ds.to_netcdf(path_save)
