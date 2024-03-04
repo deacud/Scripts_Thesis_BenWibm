@@ -1,0 +1,37 @@
+# A rule script to filter unknown parameters in GRIB Files and set shortName, else let everything unchanged
+# used as input within get_uvq_pressure_grib2.sh
+# author: Benedikt Wibmer, 2023-09-18
+
+# select only pressure levels (typeOfLevel: isobaricInhPa)
+if (typeOfFirstFixedSurface == 100) {
+	
+	if (parameterNumber == 255) {
+		if (count >= 25 && count <= 42) {
+			print "count = [count] shortname = [shortName] level = [level] typeOfLevel = [typeOfLevel]";
+			set shortName = "u";  # horizontal u-wind component
+			print "set shortname to: [shortName]";
+			print ;
+			write;
+			}
+		if (count >= 43 && count <= 60) {
+			print "count = [count] shortname = [shortName] level = [level] typeOfLevel = [typeOfLevel]";
+			set shortName = "v";  # horizontal v-wind component
+			print "set shortname to: [shortName]";
+			print ;
+			write;
+			}
+		if (count >= 79 && count <= 96) {
+			print "count = [count] shortname = [shortName] level = [level] typeOfLevel = [typeOfLevel]";
+			set shortName = "q";  # specific humidity
+			print "set shortname to: [shortName]";
+			print ;
+			write;
+			}
+		}
+	else {
+		print "do nothing: count = [count] shortname = [shortName] level = [level] typeOfLevel = [typeOfLevel]";
+		}
+}
+
+
+
