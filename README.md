@@ -62,6 +62,8 @@ Again this is done for faster access in the Analysis afterwards (e.g. for creati
 
 `read_iBox_Fluxes.py` is used to read in Flux data from iBox stations. Is used within other scripts to analyse surface fluxes like sensible heat flux etc.
 
+`read_MWR.py` is used to read in the Microwave Radiometer observations. Is used within other scripts.
+
 ----
 **Analysis scripts:**
 
