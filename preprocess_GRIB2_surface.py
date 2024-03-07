@@ -121,8 +121,8 @@ def _open_mfdataset(dir_path, cfgrib_kwargs, preprocess):
 
     '''
     # set path to grib files
-    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
-
+#    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
+    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM1k+*.grib2')))
     # open all files
     # !!!WB: split them up in 1/2 -> maybe works better
     n_half = int((len(path_files) + 1) / 2)
@@ -164,8 +164,8 @@ def _open_mfdataset_unknowns(dir_path, cfgrib_kwargs, preprocess):
     '''
 
     # set path to grib files
-    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
-
+#    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
+    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM1k+*.grib2')))
     # open all files in loop
     # !!!WB: does not work otherwise, missing information bla bla
     for i, f in enumerate(path_files):
@@ -254,7 +254,7 @@ def _preprocess_surface_known(dir_path, run, var, var_dict=var_dict_sfc, extent=
 
     # ---- 3. check time stamps
     # !!!WB: Problem -> no correct 10min timestamps
-    ds = _checkTimestamps(ds)
+    ds = _checkTimestamps(ds, delta_m=60)
 
     # ---- 4. add global dataset attributes
     DX = dict_DX.get(run)
@@ -311,9 +311,11 @@ def _preprocess_surface_unknown(dir_path, run, var, var_dict=var_dict_sfc, exten
                      {'typeOfLevel': typeOfLevel,
                       'count': param},
                      'indexpath': ''}
+    print(f'cfgrib_kwargs: {cfgrib_kwargs}')
     # do preprocessing
     start = time.time()
     preprocess = partial(_preprocess_vars, extent=extent, param=param, var_dict=var_dict)
+    print(f'dir_path: {dir_path}')
     ds = _open_mfdataset_unknowns(dir_path, cfgrib_kwargs, preprocess)
     end = time.time()
     print(f'elapsed time preprocessing known variables: {end - start}')
@@ -323,7 +325,7 @@ def _preprocess_surface_unknown(dir_path, run, var, var_dict=var_dict_sfc, exten
 
     # ---- 3. check time stamps
     # !!!WB: Problem -> no correct 10min timestamps
-    ds = _checkTimestamps(ds)
+    ds = _checkTimestamps(ds, delta_m=60)
 
     # ---- 4. add global dataset attributes
     DX = dict_DX.get(run)
@@ -371,7 +373,7 @@ def preprocess_GRIB2_surface_main(run=None, dir_path=None, var_list=None,
         cluster = LocalCluster(scheduler_port=8786)
         client = Client(cluster)
         client.restart()
-    webbrowser.open(client.dashboard_link)
+#    webbrowser.open(client.dashboard_link)
 
     # check for selected model run
     if not run:

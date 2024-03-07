@@ -498,13 +498,13 @@ def main(station='KOLS', start_time='2019-09-13', end_time='2019-09-15'):
     '''
 
     # define paths of station data
-    path_DWD = '../../Data/CROSSINN/DATA_IOP8/Surface_station/DWD_data'
-    path_ZAMG = '../../Data/CROSSINN/DATA_IOP8/Surface_station/ZAMG_data'
-    path_ST = '../../Data/CROSSINN/DATA_IOP8/Surface_station/ST_data'
-    path_ACINN = '../../Data/CROSSINN/DATA_IOP8/Surface_station/ACINN_data'
+    path_DWD = '/perm/aut0883/data/CROSSINN/DATA_IOP8/Surface_station/DWD_data'
+    path_ZAMG = '/perm/aut0883/data/CROSSINN/DATA_IOP8/Surface_station/ZAMG_data'
+    path_ST = '/perm/aut0883/data/CROSSINN/DATA_IOP8/Surface_station/ST_data'
+    path_ACINN = '/perm/aut0883/data/CROSSINN/DATA_IOP8/Surface_station/ACINN_data'
 
     # define path of metadata stations
-    path_metadata = '../../Data/CROSSINN/DATA_IOP8/Surface_station/'
+    path_metadata = '/perm/aut0883/data/CROSSINN/DATA_IOP8/Surface_station/'
     metadata = pd.read_csv(path.join(path_metadata, 'Stations.csv'))
 
     # decide from where station data to load

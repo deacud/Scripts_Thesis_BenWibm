@@ -23,7 +23,7 @@ from preprocess_Station_hybridPressure import preprocess_Station_main
 from datetime import datetime
 
 # set global attributes
-dir_plots = '../../Plots/Stations/'
+dir_plots = '/perm/aut0883/plots/Stations/'
 
 dict_diff = {'t2m': {'ylabel': '$\Delta$ 2 m temperature (°C)',
                      'ylimit': (-8, 8), },
@@ -68,6 +68,7 @@ def get_ModelData(station_meta, var_list, run, method='linear'):
     dir_path = get_Dataset_path(run)
     filename = get_Dataset_name(run, 'heightAboveGround')
     path_file = glob2.glob(join(dir_path, filename))
+    print(f'dir_path, filename, input file: {dir_path, filename, path_file}')
     ds = xr.open_mfdataset(path_file, chunks={'valid_time': 1})
 
     # ---- 2. check for pressure data if needed
@@ -77,6 +78,8 @@ def get_ModelData(station_meta, var_list, run, method='linear'):
         tmp = xr.open_mfdataset(path_file, chunks={'valid_time': 1})
         ds['sp'] = tmp.sp / 100  # convert to hPa
 
+    print(f'Input model data file: {path_file}')
+        
     # ---- 3. select only needed variables
     try:
         ds = ds[var_list]
@@ -195,7 +198,7 @@ def get_ModelData_lowestModelLevel(station_meta, var_list, run):
 
 def get_StationOBS_Dataset(station_meta,
                            start_time='2019-09-12 11:51', end_time='2019-09-14 03:00',
-                           resample=True, res_time='10min'):
+                           resample=True, res_time='60min'):
     '''
     function to load station observations and average it over resample time.
 
@@ -277,7 +280,8 @@ def _get_deltaZ_modelTerrain(run, station_meta, method='linear'):
     dir_path = get_Dataset_path(run)
     name_ds = get_Dataset_name(run, 'surface', var='z')
     path_file = glob2.glob(join(dir_path, name_ds))
-
+    print(f'dir_path, name_ds, path_file: {dir_path}, {name_ds}, {path_file}')
+    
     # open file
     with xr.open_mfdataset(path_file, chunks={'valid_time': 1}) as ds:
         ds = ds.isel(valid_time=0)
@@ -676,6 +680,7 @@ def main_StationAnalysis(runs, method='linear', with_lowest_ML=True):
         ds_model_lowestML = {}
         for i, run in enumerate(runs):
             print(station, i, run)
+            print(f'station_meta, var_list, run: {station_meta},{var_list},{run} ')
             ds_model[run] = get_ModelData(station_meta, var_list, run,
                                           method=method)  # add model to data container
             ds_model_lowestML[run] = get_ModelData_lowestModelLevel(station_meta, ['z', 't', 'u', 'v'], run)
@@ -683,6 +688,7 @@ def main_StationAnalysis(runs, method='linear', with_lowest_ML=True):
         # ---- 5. make plots ---
         # standard plots
         for var in ['t2m', ['ff', 'dd']]:
+            print(f'Plotting {var}')
             fig, ax = plot_StationData(ds_model, df_obs, station_meta,
                                        var=var, run=runs, save=True, dir_plots=dir_plots)
             if var == 't2m' and with_lowest_ML:
@@ -742,6 +748,7 @@ def main_StationAnalysis_lowestModelLevel(runs, method='linear'):
 
         # ---- 5. make plots ---
         for var in ['t', ['ff', 'dd']]:
+            print(f'Plotting {var} for {station_meta}')
             fig, ax = plot_StationData(ds_model, df_obs, station_meta,
                                        var=var, run=runs, save=False, dir_plots=dir_plots)
             name_plot = f'{station_meta.prf}_OBS_{runs}_{var}_lowestML.svg'  # name of plot
@@ -795,6 +802,7 @@ def main_StationAnalysis_deviations(runs, var, stations=['KOLS', 'MUC'], method=
         tmp = {}
         for i, run in enumerate(runs):
             print(station, i, run)
+            print(f'station_meta, var_list, run, method: {station_meta}, {var_list}, {run}, {method}')
             tmp[run] = get_ModelData(station_meta, var_list, run,
                                      method=method)  # add model to data container
         # add to data container
@@ -820,7 +828,8 @@ def main_StationAnalysis_deviations(runs, var, stations=['KOLS', 'MUC'], method=
 # %% ---- main ----
 
 # OP500 vs OP1000 vs OP2500
-runs = ['OP500', 'OP1000', 'OP2500']
+#runs = ['OP500', 'OP1000', 'OP2500']
+runs = ['OP1000']
 main_StationAnalysis(runs)
 # main_StationAnalysis_lowestModelLevel(runs)  # not needed anymore
 main_StationAnalysis_deviations(runs, 'pmsl', stations=['KOLS', 'KUF'])

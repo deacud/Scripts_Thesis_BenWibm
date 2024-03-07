@@ -11,18 +11,20 @@ File which controls path handling
 from os.path import join, dirname
 
 # parent directory of model runs
-dir_parent = '/media/benwib/Benni_SSD/MasterThesis/Data_AROME/'  # !!!Adapt!!!
-
+#dir_parent = '/media/benwib/Benni_SSD/MasterThesis/Data_AROME/'  # !!!Adapt!!!
+dir_parent = '/perm/aut0883/claef1k/DATA/20190912/12/MEM_00/'
 # parent directory of observation data
-dir_CROSSINN = '/home/benwib/Studium/Master_Thesis/Data/CROSSINN/'  # !!!Adapt!!!
+#dir_CROSSINN = '/home/benwib/Studium/Master_Thesis/Data/CROSSINN/'  # !!!Adapt!!!
+dir_CROSSINN = '/perm/aut0883/data/CROSSINN/'
 
 
 # directories of different model runs
-folder_run = dict(OP500='0.5km/',
-                  OP1000='1.0km/OP/',
-                  ARP1000='1.0km/ARP/',
-                  IFS1000='1.0km/IFS/',
-                  OP2500='2.5km/')
+#folder_run = dict(OP500='0.5km/',
+#                  OP1000='1.0km/OP/',
+#                  ARP1000='1.0km/ARP/',
+#                  IFS1000='1.0km/IFS/',
+#                  OP2500='2.5km/')
+folder_run = dict(OP1000='')
 
 # directories of observation datasets
 dir_OBS = dict(RS=join(dir_CROSSINN, 'DATA_IOP8/RS/IOP8/'),

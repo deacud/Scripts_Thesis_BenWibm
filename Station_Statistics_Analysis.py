@@ -27,9 +27,10 @@ import scipy
 from adjustText import adjust_text
 import seaborn as sns
 from config_file import dict_extent
+import sys
 
 # set global attributes
-dir_plots = '../../Plots/Station_Stats/'
+dir_plots = '/perm/aut0883/plots/Station_Stats/'
 
 dict_labeling = {'t2m': {'title': '2 m temperature',
                          'ylabel': '2 m temperature (°C)',
@@ -77,6 +78,7 @@ def _get_ModelData(run, var_list=['t2m', 'r2', 'u10', 'v10']):
     path_file = glob2.glob(join(dir_path, name_ds))
 
     # open file
+    print(f'path_file: {path_file}')
     ds = xr.open_mfdataset(path_file, chunks={'valid_time': 1})
 
     # select needed variables
@@ -250,6 +252,9 @@ def _statistics_model_obs(df_model_stations, stations_obs, stations_meta, var):
                 ff_mean[prf] = np.nan
             else:
                 diff = (pred - obs)
+                print(f'var: {var}')
+                print(f'pred: {pred}')
+                print(f'obs: {obs}')
                 if var == 'dd':
                     # need some adjustements for wind direction (maximum difference 180 degree)
                     diff = np.min([np.abs(diff), np.abs(diff + 360), np.abs(diff - 360)], axis=0)
@@ -882,16 +887,17 @@ def main(runs=['OP500'], provider=['ACINN', 'ZAMG', 'DWD', 'ST'], var='t2m', sav
     stations_meta = get_StationMetaProvider(dir_metadata, provider)
 
     # ---- 2. load stations observation data
-    stations_obs = _get_StationObs(stations_meta)
+    stations_obs = _get_StationObs(stations_meta, res_time='60min')
 
     # ---- 3. iterate over modelruns
     for run in runs:
+        print(f'run: {run}')
         # load model terrain data
         ds_terrain = _get_ModelTerrain(run)
-
+        print(f'ds_terrain: {ds_terrain}')
         # get difference model real topography for stations
         df_deltaZ = _get_deltaZ(ds_terrain, stations_meta, method=method)
-
+        print(f'df_deltaZ: {df_deltaZ}')
         # make terrain plot
         fig, ax = _plot_terrain_deltaZ(ds_terrain, df_deltaZ)
         if save:
@@ -911,6 +917,12 @@ def main(runs=['OP500'], provider=['ACINN', 'ZAMG', 'DWD', 'ST'], var='t2m', sav
         df_model_stations = _interp_model_stations(ds_model, stations_meta, var, method=method)
 
         # do statistics
+ #       print(f'df_model_stations: {df_model_stations}')
+ #       print(f"df_model_stations: {df_model_stations['OB']}")
+ #       print(f'stations_obs: {stations_obs}')
+ #       print(f'stations_meta: {stations_meta}')
+ #       print(f'var: {var}')
+ #       sys.exit()
         stats, df_model_IOP8, df_obs_IOP8 = _statistics_model_obs(
             df_model_stations, stations_obs, stations_meta, var)
 
@@ -949,9 +961,10 @@ def main(runs=['OP500'], provider=['ACINN', 'ZAMG', 'DWD', 'ST'], var='t2m', sav
 
 
 # %% call main
-if __name__ == '__main_':
+if __name__ == '__main__':
 
-    runs = ['OP500', 'OP1000', 'OP2500']
+#    runs = ['OP500', 'OP1000', 'OP2500']
+    runs = ['OP1000']
     var_list = ['t2m', 'ff', 'dd']
     for var in var_list:
         main(runs=runs, var=var)

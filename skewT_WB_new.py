@@ -25,9 +25,10 @@ import read_MWR
 from path_handling import (get_Dataset_path, get_ObsDataset_path, get_Coupling_IFS_path, dir_metadata,
                            get_Dataset_name, get_interpStation_name, get_GRIB_path)
 from matplotlib import gridspec
+import sys
 
 # define global variables
-dir_plots = '../../Plots/Profiles/'
+dir_plots = '/perm/aut0883/plots/Profiles/'
 
 
 def _get_modelData(dir_path, var_list, run, timestep, station_meta, method='linear'):
@@ -62,7 +63,7 @@ def _get_modelData(dir_path, var_list, run, timestep, station_meta, method='line
     # get path to file
     filename = get_interpStation_name(run, coords)  # load already interpolated Dataset from HT
     path_file = glob2.glob(join(dir_path, filename))
-
+    print(f'Input GRIB file: {path_file}')
     # open dataset or extract data from GRIB File
     if path_file != []:
         ds_init = xr.open_mfdataset(path_file, chunks={'valid_time': 1})
@@ -118,7 +119,8 @@ def _read_profile(dir_path, run, timestep, station_meta,
 
     # set path to grib files
     path_GRIB = get_GRIB_path(run)
-    path_file = sorted(glob2.glob(join(path_GRIB, f'GRIBPFAROMAROM+00{step:02d}_00.grib2')))
+#    path_file = sorted(glob2.glob(join(path_GRIB, f'GRIBPFAROMAROM+00{step:02d}_00.grib2')))
+    path_file = sorted(glob2.glob(join(path_GRIB, f'GRIBPFAROMAROM1k+00{step:02d}_00.grib2')))
 
     # open dataset
     cfgrib_kwargs = {'filter_by_keys':
@@ -165,6 +167,7 @@ def _get_ObsDataset(dir_path, run, timestep):
     # check which observational data is needed
     if run == 'RS':
         # create radiosonde dataset
+        print(f'Reading radiosonde data from directory: {dir_path}')
         ds = read_RS.main(dir_path)
         # interpolate data between available timesteps hourly
         ds = ds.resample(time='1h').interpolate('linear')
@@ -627,6 +630,7 @@ def main_skewT(station, var_list, timestep, runs, with_obs=True, save=True):
     ds_profiles = {}
     for run in runs:
         dir_path = get_Dataset_path(run)
+        print(f'Model output directory for the {run} run: {dir_path}')
         ds_profiles[run] = _get_modelData(dir_path, var_list, run, timestep, station_meta)
 
     # ---- 2. get observation profiles
@@ -731,7 +735,8 @@ def main_skewT_domainForcing(station, var_list, timestep, runs, with_obs=True, s
 
 # %% RS_KOLS plots - OP500, OP1000, OP2500
 # define paths
-runs = ['OP500', 'OP1000', 'OP2500']
+#runs = ['OP500', 'OP1000', 'OP2500']
+runs = ['OP1000']
 
 # define timestep
 timesteps = ['2019-09-12T23:00:00', '2019-09-13T00:00:00', '2019-09-13T03:00:00',
@@ -739,6 +744,7 @@ timesteps = ['2019-09-12T23:00:00', '2019-09-13T00:00:00', '2019-09-13T03:00:00'
              '2019-09-13T11:00:00', '2019-09-13T12:00:00', '2019-09-13T13:00:00',
              '2019-09-13T15:00:00', '2019-09-13T17:00:00',
              '2019-09-13T20:00:00', '2019-09-13T23:00:00']
+#timesteps = ['2019-09-12T23:00:00', '2019-09-13T00:00:00']
 
 # timesteps = np.arange(np.datetime64('2019-09-12T12:00:00'),
 #                       np.datetime64('2019-09-14T04:00:00'),
@@ -752,7 +758,9 @@ var_list = ['t', 'q', 'u', 'v', 'z', 'pres']
 
 # make plots @RS Launches
 for timestep in timesteps:
-    main_skewT(station, var_list, timestep, runs, save=False)
+#    main_skewT(station, var_list, timestep, runs, save=False)
+    main_skewT(station, var_list, timestep, runs, save=True)
+
 
 # %% RS_KOLS plots - OP1000, ARP1000, IFS1000
 runs = ['OP1000', 'ARP1000', 'IFS1000']
@@ -772,12 +780,13 @@ station = 'KOLS'
 var_list = ['t', 'q', 'u', 'v', 'z', 'pres']
 
 # make plots @RS Launches
-for timestep in timesteps:
-    main_skewT(station, var_list, timestep, runs)
+##for timestep in timesteps:
+##    main_skewT(station, var_list, timestep, runs)
 
 # %% RS_LOWI plots
 # define paths
-runs = ['OP500', 'OP1000', 'OP2500']
+#runs = ['OP500', 'OP1000', 'OP2500']
+runs = ['OP1000']
 
 # define timestep
 timesteps = ['2019-09-13T03:00:00', '2019-09-14T03:00:00']
@@ -792,14 +801,15 @@ var_list = ['t', 'q', 'u', 'v', 'z', 'pres']
 for timestep in timesteps:
     main_skewT(station, var_list, timestep, runs)
 
-
 # %% RS_MUC plots
 # define paths
-runs = ['OP500', 'OP1000', 'OP2500']
+#runs = ['OP500', 'OP1000', 'OP2500']
+runs = ['OP1000']
 
 # define timestep
 timesteps = ['2019-09-12T12:00:00', '2019-09-13T00:00:00', '2019-09-13T12:00:00', '2019-09-13T18:30:00',
              '2019-09-14T00:00:00']
+timesteps = ['2019-09-12T12:00:00', '2019-09-13T00:00:00', '2019-09-13T12:00:00', '2019-09-14T00:00:00']
 
 # get station metadata
 station = 'RS_MUC'
@@ -811,7 +821,8 @@ var_list = ['t', 'q', 'u', 'v', 'z', 'pres']
 for timestep in timesteps:
     main_skewT(station, var_list, timestep, runs, with_obs=False)
 
-
+sys.exit("Daniel: Stopped the script before plotting IFS couping profiles!")
+    
 # %% RS_STUT - Plots with IFS Coupling profile
 
 runs = ['OP500', 'OP1000', 'OP2500']
@@ -833,7 +844,8 @@ for timestep in timesteps:
 
 # %% RS_LIPI - Plots with IFS Coupling profile
 
-runs = ['OP500', 'OP1000', 'OP2500']
+#runs = ['OP500', 'OP1000', 'OP2500']
+runs = ['OP1000']
 
 # define timestep
 timesteps = np.arange(np.datetime64('2019-09-12T12:00:00'),

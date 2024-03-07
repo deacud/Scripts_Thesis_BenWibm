@@ -120,7 +120,8 @@ def _open_mfdataset(dir_path, cfgrib_kwargs, preprocess):
 
     '''
     # set path to grib files
-    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
+ #   path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
+    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM1k+*.grib2')))
 
     # open all files
     # !!!WB: split them up in 1/2 -> maybe works better
@@ -163,7 +164,8 @@ def _open_mfdataset_unknowns(dir_path, cfgrib_kwargs, preprocess):
     '''
 
     # set path to grib files
-    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
+#    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
+    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM1k+*.grib2')))
 
     # open all files in loop
     # !!!WB: does not work otherwise, missing information bla bla
@@ -253,7 +255,7 @@ def _preprocess_meanSea_known(dir_path, run, var, var_dict=var_dict_meanSea, ext
 
     # ---- 3. check time stamps
     # !!!WB: Problem -> no correct 10min timestamps
-    ds = _checkTimestamps(ds)
+    ds = _checkTimestamps(ds, delta_m=60)
 
     # ---- 4. add global dataset attributes
     DX = dict_DX.get(run)
@@ -322,7 +324,7 @@ def _preprocess_meanSea_unknown(dir_path, run, var, var_dict=var_dict_meanSea, e
 
     # ---- 3. check time stamps
     # !!!WB: Problem -> no correct 10min timestamps
-    ds = _checkTimestamps(ds)
+    ds = _checkTimestamps(ds, delta_m=60)
 
     # ---- 4. add global dataset attributes
     DX = dict_DX.get(run)

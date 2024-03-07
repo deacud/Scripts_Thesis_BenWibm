@@ -10,15 +10,19 @@ Script to read in GRIB files and preprocess data on hybrid pressure levels and s
 
 import xarray as xr
 import numpy as np
-from os.path import join
+from os.path import join, realpath
 import glob2
 import time
 import gc
 import sys
 from functools import partial
 from dask.distributed import Client, LocalCluster
+# Define the BROWSER environment variable for Atos
+#from os import environ
+#environ["BROWSER"] = "/usr/lib64/firefox/firefox"
 import webbrowser
 from path_handling import get_GRIB_path, get_Dataset_path, set_Dataset_name
+import cfgrib
 
 # dicts of unknown variables in GRIB files
 # !!!ADJUST if further variables needed!!!
@@ -48,7 +52,7 @@ def _preprocess_vars(ds, extent=None):
         extent of lon/lat coordinates to keep. Default: None
 
     '''
-
+    print(f'data_vars: {ds.data_vars}')
     # slice to smaller extent -> less memory and time consuming
     if extent:
         lons = extent[0:2]
@@ -105,8 +109,10 @@ def _open_mfdataset(dir_path, cfgrib_kwargs, preprocess):
 
     '''
     # set path to grib files
-    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
-
+#    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
+    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM1k+*.grib2')))
+#    path_files = sorted(glob2.glob(join(dir_path, 'CLAEF00+*.grb')))
+    print(f'Input files: \n {path_files}')
     # open all files
     # TODO: split them up in 1/4 -> maybe works better
     n_fourths = int((len(path_files) + 1) / 4)
@@ -117,6 +123,11 @@ def _open_mfdataset(dir_path, cfgrib_kwargs, preprocess):
 
     for i, p_files in enumerate(files_):
         print(f'Start processing {i+1}/4 of files ...')
+#        print(f'p_files: \n {p_files}')
+#        print(f'file: \n {p_files[i]}')
+#        tmp = xr.open_dataset(p_files[0], backend_kwargs={'filter_by_keys': {'typeOfLevel': 'hybridPressure'}})
+#        print(f'data_vars after call to _open_mfdataset: {tmp.data_vars}')
+#        sys.exit()
         tmp = xr.open_mfdataset(p_files, engine='cfgrib', combine='nested', concat_dim='valid_time',
                                 chunks={'valid_time': 1, 'hybridPressure': 28}, parallel=True,
                                 preprocess=preprocess,
@@ -194,7 +205,9 @@ def _preprocess_typeOfLevel(dir_path, run, var, var_dict=var_dict_hybrid, extent
     preprocess = partial(_preprocess_vars, extent=extent)
 
     start = time.time()
+    print(f'dir_path: {dir_path}')
     ds = _open_mfdataset(dir_path, cfgrib_kwargs, preprocess)
+    print(f'data_vars after call to _open_mfdataset: {ds.data_vars}')
     end = time.time()
     print(f'elapsed time preprocessing known variables: {end - start}')
 
@@ -203,7 +216,7 @@ def _preprocess_typeOfLevel(dir_path, run, var, var_dict=var_dict_hybrid, extent
 
     # ---- 3. check time stamps
     # (WB: Problem -> no correct 10min timestamps)
-    ds = _checkTimestamps(ds)
+    ds = _checkTimestamps(ds, delta_m=60)
 
     # ---- 4. add global dataset attributes
     DX = dict_DX.get(run)
@@ -246,13 +259,14 @@ def preprocess_GRIB2_hybridPressure_main(run=None, dir_path=None, var_list=None,
 
     # start Dask Client
     print('Start client')
+# Check for a running local cluster before creating a new one
     try:
         client = Client('tcp://localhost:8786', timeout='2s')
     except OSError:
         cluster = LocalCluster(scheduler_port=8786)
         client = Client(cluster)
         client.restart()
-    webbrowser.open(client.dashboard_link)
+#    webbrowser.open(client.dashboard_link)
 
     # check for selected model run
     if not run:
@@ -260,12 +274,16 @@ def preprocess_GRIB2_hybridPressure_main(run=None, dir_path=None, var_list=None,
 
     # check for path
     if not dir_path:
-        dir_path = get_GRIB_path(run)
+        print(f'dir_path before: {dir_path}')
+ #       dir_path = get_GRIB_path(run)
+        dir_path = realpath(get_GRIB_path(run))
+        print(f'dir_path returned by get_GRIB_path: {dir_path}')
 
     # call preprocessing routine
     for var in var_list:
         print(f'Start preprocess GRIB2 files for variable {var} from directory: {dir_path}')
         ds = _preprocess_typeOfLevel(dir_path, run, var, extent=extent, save=save)
+        
         ds.close()
 
         # free up memory space
@@ -333,5 +351,6 @@ if __name__ == '__main__':
         tmp_start = input(f'Be careful (!!large data size!!) '
                           f'Start preprocessing {var_list} of {run} to {extent} (y/n):')
         if tmp_start == 'y':
+            print(f'dir_path before call to preprocess_GRIB2_hybridPressure_main: {dir_path}')
             preprocess_GRIB2_hybridPressure_main(run=run, dir_path=dir_path, var_list=var_list,
                                                  extent=extent, save=save)

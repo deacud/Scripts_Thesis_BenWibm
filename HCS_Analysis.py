@@ -29,7 +29,7 @@ from config_file import dict_extent
 from customized_barbs import barbs
 
 # set global parameters
-dir_plots = '../../Plots/HCS/'  # path of plots
+dir_plots = '/perm/aut0883/plots/HCS'  # path of plots
 
 dict_cbar_kwargs = {'ff': {'label': 'horizontal wind speed (m s$^{-1}$)',
                            'extend': 'max'},
@@ -204,7 +204,7 @@ def _getData(run, var_list, timestep, typeOfLevel, level=None):
 
         # get file path
         path_file = glob2.glob(join(dir_path, name_ds))
-
+        print(f'i, var, level, typeOfLevel, dir_path, name_ds, path_file: {i}, {var}, {level}, {typeOfLevel}, {dir_path}, {name_ds}, {path_file}')
         # open file and select timestep
         tmp = xr.open_mfdataset(path_file, chunks={'valid_time': 1}).sel(valid_time=timestep)
 
@@ -827,10 +827,11 @@ def main_difference_to_KOLS(run=None, var_list=None, var=None, timestep=None,
 
 
 # %% --- main HCS plots ---
-if __name__ == '__main_':
+if __name__ == '__main__':
 
     # define some needed parameters
-    runs = ['OP500', 'OP1000', 'OP2500']  # , 'ARP1000', 'IFS1000']
+#    runs = ['OP500', 'OP1000', 'OP2500']  # , 'ARP1000', 'IFS1000']
+    runs = ['OP1000'] 
     timesteps = np.arange(np.datetime64('2019-09-12T18:00:00'),
                           np.datetime64('2019-09-14T04:00:00'),
                           np.timedelta64(3, 'h'))
@@ -866,15 +867,15 @@ if __name__ == '__main_':
                                mask=False, add_isohypses=True, save=True)
 
     extent = 'OP500'
-    var_list = ['u', 'v', 'w', 'z', 't', 'q']
-    level = 850
-    typeOfLevel = 'isobaricInhPa'
-    params = ['ff']  # ['ff', 't', 'theta']
-    for var in params:
-        for timestep in timesteps:
-            out = main_HCS(run='OP2500', var_list=var_list, var=var, timestep=timestep,
-                           typeOfLevel=typeOfLevel, level=level, extent=extent,
-                           mask=True, add_isohypses=True, add_quiver=True, save=False)
+#    var_list = ['u', 'v', 'w', 'z', 't', 'q']
+#    level = 850
+#    typeOfLevel = 'isobaricInhPa'
+#    params = ['ff']  # ['ff', 't', 'theta']
+#    for var in params:
+#        for timestep in timesteps:
+#            out = main_HCS(run='OP2500', var_list=var_list, var=var, timestep=timestep,
+#                           typeOfLevel=typeOfLevel, level=level, extent=extent,
+#                           mask=True, add_isohypses=True, add_quiver=True, save=False)
 
     # -------------------------------
     # ---- plots height above ground
@@ -892,15 +893,15 @@ if __name__ == '__main_':
     # -------------------------------
     # ---- plots surface
     # -------------------------------
-    var_list = ['tcc', 'z']
-    typeOfLevel = 'surface'
-    params = ['tcc']
-    for var in params:
-        for run in runs:
-            for timestep in timesteps:
-                ds = main_HCS(run=run, var_list=var_list, var=var, timestep=timestep,
-                              typeOfLevel=typeOfLevel, extent=extent, mask=False,
-                              add_terrain_lines=True, save=True)
+#    var_list = ['tcc', 'z']
+#    typeOfLevel = 'surface'
+#    params = ['tcc']
+#    for var in params:
+#        for run in runs:
+#           for timestep in timesteps:
+#               ds = main_HCS(run=run, var_list=var_list, var=var, timestep=timestep,
+#                             typeOfLevel=typeOfLevel, extent=extent, mask=False,
+#                              add_terrain_lines=True, save=True)
 
 # %% --- main HCS difference plots ---
 if __name__ == '__main_':
@@ -954,10 +955,11 @@ if __name__ == '__main_':
 
 
 # %% --- main HCS difference to Kolsass plots ---
-if __name__ == '__main_':
+if __name__ == '__main__':
 
     # define some needed parameters
-    runs = ['OP500', 'OP1000', 'OP2500']
+#    runs = ['OP500', 'OP1000', 'OP2500']
+    runs = ['OP1000']
     timesteps = np.arange(np.datetime64('2019-09-12T21:00:00'),
                           np.datetime64('2019-09-14T04:00:00'),
                           np.timedelta64(3, 'h'))

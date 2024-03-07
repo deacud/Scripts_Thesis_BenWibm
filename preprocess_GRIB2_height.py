@@ -106,8 +106,9 @@ def _open_mfdataset(dir_path, cfgrib_kwargs, preprocess):
 
     '''
     # set path to grib files
-    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
-
+#    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM+*.grib2')))
+    path_files = sorted(glob2.glob(join(dir_path, 'GRIBPFAROMAROM1k+*.grib2')))
+    print(f'Input files: \n {path_files}')
     # open all files
     # !!!WB: split them up in 1/2 -> maybe works better
     n_half = int((len(path_files) + 1) / 2)
@@ -183,6 +184,8 @@ def _preprocess_height_instant(dir_path, run, levels=[2, 10], var_dict=var_dict_
     '''
     # get type of level to preprocess
     typeOfLevel = var_dict.get('typeOfLevel')
+    print(f'typeOfLevel: {typeOfLevel}')
+    print(f'levels (in m): {levels}')
 
     # ---- 1. load instant parameters depending on level
     for i, lev in enumerate(levels):
@@ -210,7 +213,7 @@ def _preprocess_height_instant(dir_path, run, levels=[2, 10], var_dict=var_dict_
 
     # ---- 2. check time stamps
     # !!!WB: Problem -> no correct 10min timestamps
-    ds = _checkTimestamps(ds)
+    ds = _checkTimestamps(ds, delta_m=60)
 
     # ---- 3. add global dataset attributes
     DX = dict_DX.get(run)
@@ -258,7 +261,7 @@ def preprocess_GRIB2_height_main(run=None, dir_path=None, levels=None,
         cluster = LocalCluster(scheduler_port=8786)
         client = Client(cluster)
         client.restart()
-    webbrowser.open(client.dashboard_link)
+#    webbrowser.open(client.dashboard_link)
 
     # check for selected model run
     if not run:

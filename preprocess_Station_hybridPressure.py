@@ -47,6 +47,7 @@ def _interp_location(ds, coords, method):
 
     '''
     # interpolate to location
+    print(f'dataset: {ds}')
     ds = ds.interp(longitude=coords[0], latitude=coords[1], method=method)
     return ds.load()
 
@@ -101,6 +102,7 @@ def _create_StationData(dir_path, var_list, run, coords, method):
         # open sliced Dataset
         filename = get_Dataset_name(run, 'hybridPressure', var=var)
         path_files = glob2.glob(join(dir_path, filename))
+        print(f'dir_path, filename, path_files: {dir_path}, {filename}, {path_files}')
 
         # get correct file name to load
         for file in path_files:
@@ -110,6 +112,11 @@ def _create_StationData(dir_path, var_list, run, coords, method):
             if float(f_extent[0]) <= coords[0] <= float(f_extent[1]):
                 if float(f_extent[2]) <= coords[1] <= float(f_extent[3]):
                     path_file = file
+                else:
+                    raise Exception(f"Station is outside the preprocessed domain: {coords[1]}")
+            else:
+                raise Exception(f"Station is outside the preprocessed domain: {coords[0]}")
+                
 
         tmp = xr.open_dataset(path_file, chunks={'valid_time': 2})  # TODO: find best chuncksize speed/memory
 
@@ -171,14 +178,14 @@ def preprocess_Station_main(dir_path=None, var_list=None, run=None, coords=None,
 
     '''
     # start Dask Client
-    print('Start client')
-    try:
-        client = Client('tcp://localhost:8786', timeout='2s')
-    except OSError:
-        cluster = LocalCluster(scheduler_port=8786)
-        client = Client(cluster)
-        client.restart()
-    webbrowser.open(client.dashboard_link)
+#    print('Start client')
+#    try:
+#        client = Client('tcp://localhost:8786', timeout='2s')
+#    except OSError:
+#        cluster = LocalCluster(scheduler_port=8786)
+#        client = Client(cluster)
+#        client.restart()
+#    webbrowser.open(client.dashboard_link)
 
     # check for selected model run
     if not run:
@@ -187,6 +194,7 @@ def preprocess_Station_main(dir_path=None, var_list=None, run=None, coords=None,
     # check for path
     if not dir_path:
         dir_path = get_Dataset_path(run)
+        print(f'dir_path: {dir_path}')
 
     # create Dataset
     ds = _create_StationData(dir_path, var_list, run, coords, method)

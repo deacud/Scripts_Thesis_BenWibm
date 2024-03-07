@@ -90,7 +90,8 @@ def process_radiosounds(path_RS, header, variables_rs, var_interest, new_heights
     # get path of RS data
     path_rs = glob2.glob(join(path_RS, "*.txt"))
     onlyfiles = [basename(f) for f in path_rs]
-
+    print(f'Radiosonde data files: {path_rs}')
+    
     # get dates from file name
     dates_rs = pd.to_datetime(
         [i.split("UTC")[0] for i in onlyfiles], format="%Y%m%d_%H"
@@ -327,6 +328,7 @@ def main(path_RS=None, station='KOLS', timestamp=None):
     # heights: heights where to interpolate the RS output
     heights = np.arange(550, 5001, 10)
 
+    print(f'station: {station}')
     if station == 'KOLS':
         ds_rs = read_RS_CROSSINN(path_RS, var_interest, heights)
     else:

@@ -33,7 +33,8 @@ from customized_barbs import barbs
 from read_StationMeta import get_StationMetaData
 
 # set global parameters
-dir_plots = '../../Plots/HT/'  # path of plots
+#dir_plots = '../../Plots/HT/'  # path of plots
+dir_plots = '/perm/aut0883/plots/HT/'
 
 
 def _check_interpStationDataset(dir_path, run, station_meta, var_list):
@@ -131,9 +132,11 @@ def _get_pLevel_Data(dir_path, run, station_meta, var_list=['z', 'w']):
         # define paths
         name_ds = get_Dataset_name(run, 'isobaricInhPa', var=var)
         path_file = glob2.glob(join(dir_path, name_ds))
+        print(f'name_ds, dir_path, path_file: {name_ds}, {dir_path}, {path_file}')
 
         # load data
         ds.append(xr.open_mfdataset(path_file))
+        print(f'ds: {ds}')
 
     # merge to combined dataset
     ds = xr.merge(ds)
@@ -174,6 +177,7 @@ def get_Data(dir_path, run, station_meta=None, var_list=None):
     # Model
     if run not in ['RS', 'SL88', 'MWR']:
         # get station dataset
+        print(f'dir_path, run, station_meta, var_list: {dir_path}, {run}, {station_meta}, {var_list}')
         ds_init = _check_interpStationDataset(dir_path, run, station_meta, var_list)
 
         # add further needed variables
@@ -191,6 +195,8 @@ def get_Data(dir_path, run, station_meta=None, var_list=None):
         # get vertical wind speed data if needed (only on p-level available)
         if 'w' in var_list:
             # get data on p-levels
+            print(f"Getting 'w' on pressure levels.")
+            print(f'dir_path, run, station_meta: {dir_path}, {run}, {station_meta}')
             tmp_plevels = _get_pLevel_Data(dir_path, run, station_meta)
             # interpolate from p-levels to height levels
             tmp_plevels = interp_pLevels_ToRegularGrid(tmp_plevels, new_heights=ds.height.values)
@@ -942,7 +948,7 @@ if __name__ == '__main_':
     # ---- KOLSASS, HAIMING, ROS etc.
     # -----------------------------------------------
     # define parameters
-    stations = ['KOLS']  # , 'HAI', 'ROS', 'UNI', 'RS_LOWI', 'RS_MUC']
+    stations = ['KOLS', 'HAI', 'ROS', 'UNI', 'RS_LOWI', 'RS_MUC']
 
     for station in stations:
 
@@ -1024,7 +1030,7 @@ if __name__ == '__main_':
         save_plot(dir_plots, name_plot)
 
 # %% --- main OP1000 ---
-if __name__ == '__main_':
+if __name__ == '__main__':
 
     # define paramters global
     var_list = ['u', 'v', 't', 'z', 'pres', 'q', 'tke', 'w']
@@ -1033,14 +1039,17 @@ if __name__ == '__main_':
 
     # define paths
     dir_path = get_Dataset_path(run)
+    print(f'run, dir_path: {run}, {dir_path}')
 
     # -----------------------------------------------
     # ---- KOLSASS, HAIMING, ROS
     # -----------------------------------------------
     # define parameters
-    stations = ['KOLS']  # , 'HAI', 'ROS', 'UNI', 'RS_LOWI', 'RS_MUC']
+#    stations = ['KOLS', 'HAI', 'ROS', 'UNI', 'RS_LOWI', 'RS_MUC']
+    stations = ['KOLS', 'HAI', 'UNI'] #, 'RS_LOWI']
 
     for station in stations:
+        print(f'station: {station}')
 
         # load metadata station
         station_meta = get_StationMetaData(dir_metadata, station)
@@ -1090,8 +1099,9 @@ if __name__ == '__main_':
     # ------------------------------------------------
     # define parameters
     var_list = ['pres', 'theta']
-    station_list = [['KOLS', 'HAI'], ['ROS', 'KOLS'], ['ROS', 'HAI'], ['RS_MUC', 'KOLS']]
-
+#    station_list = [['KOLS', 'HAI'], ['ROS', 'KOLS'], ['ROS', 'HAI'], ['RS_MUC', 'KOLS']]
+    station_list = [['KOLS', 'HAI']]
+    
     for station in station_list:
         # calculate difference between stations
         ds_diff = calc_gradients_WB.main(ds_OP1000[station[0]], ds_OP1000[station[1]], var_list)
@@ -1299,7 +1309,7 @@ if __name__ == '__main_':
     # ---- KOLSASS, HAIMING, ROS etc.
     # -----------------------------------------------
     # define parameters
-    stations = ['KOLS']  # , 'HAI', 'ROS', 'UNI', 'RS_LOWI', 'RS_MUC']
+    stations = ['KOLS', 'HAI', 'ROS', 'UNI', 'RS_LOWI', 'RS_MUC']
 
     for station in stations:
 
@@ -1381,7 +1391,7 @@ if __name__ == '__main_':
         save_plot(dir_plots, name_plot)
 
 # %% --- main Radiosonde ---
-if __name__ == 'main':
+if __name__ == '__main__':
 
     # define parameters
     run = 'RS'
@@ -1437,7 +1447,7 @@ if __name__ == 'main':
     save_plot(dir_plots, name_plot)
 
 # %% --- main Lidar ---
-if __name__ == 'main':
+if __name__ == '__main__':
 
     # define parameters
     run = 'SL88'
@@ -1493,7 +1503,7 @@ if __name__ == 'main':
     save_plot(dir_plots, name_plot)
 
 # %% --- main MWR ---
-if __name__ == 'main':
+if __name__ == '__main__':
 
     # define parameters
     run = 'MWR'
@@ -1515,11 +1525,12 @@ if __name__ == 'main':
         save_plot(dir_plots, name_plot)
 
 # %% --- difference Model run - Lidar ---
-if __name__ == 'main':
+if __name__ == '__main__':
 
     # define paramters global
     var_list = ['u', 'v', 't', 'z', 'pres', 'q', 'tke']
-    runs = ['OP500', 'OP1000', 'OP2500']
+#    runs = ['OP500', 'OP1000', 'OP2500']
+    runs = ['OP1000']
     station = 'KOLS'
     ds_model = {}
     ds_init = {}
@@ -1580,11 +1591,12 @@ if __name__ == 'main':
         save_plot(dir_plots, name_plot)
 
 # %% --- difference Model run - RS ---
-if __name__ == 'main':
+if __name__ == '__main__':
 
     # define paramters global
     var_list = ['u', 'v', 't', 'z', 'pres', 'q', 'tke']
-    runs = ['OP500', 'OP1000', 'OP2500']
+#    runs = ['OP500', 'OP1000', 'OP2500']
+    runs = ['OP1000']
     station = 'KOLS'
     ds_model = {}
     ds_init = {}
@@ -1633,11 +1645,12 @@ if __name__ == 'main':
         save_plot(dir_plots, name_plot)
 
 # %% --- difference model run - MWR ---
-if __name__ == 'main':
+if __name__ == '__main__':
 
     # define paramters global
     var_list = ['u', 'v', 't', 'z', 'pres', 'q', 'tke']
-    runs = ['OP500', 'OP1000', 'OP2500']
+#    runs = ['OP500', 'OP1000', 'OP2500']
+    runs = ['OP1000']
     station = 'KOLS'
     ds_model = {}
     ds_init = {}
@@ -1669,11 +1682,12 @@ if __name__ == 'main':
         save_plot(dir_plots, name_plot)
 
 # %% --- difference Model runs ---
-if __name__ == 'main':
+if __name__ == '__main__':
 
     # define paramters global
     var_list = ['u', 'v', 't', 'z', 'pres', 'q', 'tke']
-    runs = ['OP500', 'OP1000', 'OP2500']
+#    runs = ['OP500', 'OP1000', 'OP2500']
+    runs = ['OP1000', 'OP1000']
     station = 'KOLS'
     ds_model = {}
     ds_init = {}
@@ -1690,7 +1704,8 @@ if __name__ == 'main':
         # get profile Dataset model
         ds_model[run], ds_init[run] = get_Data(dir_path, run, station_meta, var_list)
 
-    diff_runs = [[runs[0], runs[1]], [runs[0], runs[2]]]
+#    diff_runs = [[runs[0], runs[1]], [runs[0], runs[2]]]
+    diff_runs = [[runs[0], runs[1]]]
     for d_r in diff_runs:
         # calculate difference between model runs
         ds_diff = calc_gradients_WB.main(ds_model[d_r[0]], ds_model[d_r[1]], ['ff', 'dd'])

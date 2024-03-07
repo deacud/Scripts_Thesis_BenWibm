@@ -54,6 +54,7 @@ def _preprocess_vars(ds, extent=None):
     if extent:
         lons = extent[0:2]
         lats = extent[::-1][0:2]
+        print(f'ds: {ds}')
         ds = ds.sel(longitude=slice(lons[0], lons[1]), latitude=slice(lats[0], lats[1]))
         ds.load()
 
@@ -116,14 +117,17 @@ def _open_mfdataset(dir_path, file_name, cfgrib_kwargs, preprocess):
               path_files[n_fourths:2*n_fourths],
               path_files[2*n_fourths:3*n_fourths],
               path_files[3*n_fourths:]]
-
+    print(f'dir_path, file_name, path_files: {dir_path}, {file_name}, {path_files}')
+    print(f'files: {files_}')
     for i, p_files in enumerate(files_):
         print(f'Start processing {i+1}/4 of files ...')
+        print(f'p_files: {p_files}')
+        print(f'cfgrib_kwargs: {cfgrib_kwargs}')
         tmp = xr.open_mfdataset(p_files, engine='cfgrib', combine='nested', concat_dim='valid_time',
-                                chunks='auto', parallel=True, preprocess=preprocess,
+                                chunks='auto', parallel=False, preprocess=preprocess,
                                 drop_variables=['step', 'time'],
                                 backend_kwargs=cfgrib_kwargs)
-
+        print(f'tmp: {tmp}')
         # concat datasets after iteration
         if i == 0:
             ds = tmp
@@ -206,15 +210,18 @@ def _preprocess_pressureLevels(dir_path, run, var, var_dict=var_dict_prs,
 
     # check if varibale known/unknown
     if var in var_dict['GRIB_shortName']:
-        file_name = 'GRIBPFAROMAROM_isobaricInhPa_*.grib2'
+#        file_name = 'GRIBPFAROMAROM_isobaricInhPa_*.grib2'
+        file_name = 'GRIBPFAROMAROM1k_isobaricInhPa_*.grib2'
     else:
-        file_name = 'GRIBPFAROMAROM+*.grib2'
+#        file_name = 'GRIBPFAROMAROM+*.grib2'
+        file_name = 'GRIBPFAROMAROM1k+*.grib2'
 
     # do preprocessing
     preprocess = partial(_preprocess_vars, extent=extent)
 
     start = time.time()
     print(f'Start preprocessing files: {file_name} ...')
+    print(f'cfgrib_kwargs: {cfgrib_kwargs}')
     ds = _open_mfdataset(dir_path, file_name, cfgrib_kwargs, preprocess)
     end = time.time()
     print(f'elapsed time preprocessing variables: {end - start}')
@@ -224,7 +231,7 @@ def _preprocess_pressureLevels(dir_path, run, var, var_dict=var_dict_prs,
 
     # ---- 3. check time stamps
     # (WB: Problem -> no correct 10min timestamps)
-    ds = _checkTimestamps(ds)
+    ds = _checkTimestamps(ds, delta_m=60)
 
     # ---- 4. add global dataset attributes
     DX = dict_DX.get(run)
